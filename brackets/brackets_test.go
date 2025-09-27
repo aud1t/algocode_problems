@@ -39,7 +39,7 @@ var testCases = []TestCase{
 func TestFindSingleInvalidIndex(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			got := findSingleInvalidIndex(testCase.input)
+			got := FindSingleInvalidIndex(testCase.input)
 			if got != testCase.expected {
 				t.Errorf("получено: %d, ожидалось: %d", got, testCase.expected)
 			}
