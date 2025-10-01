@@ -32,39 +32,38 @@ func DotProduct(vec1, vec2 []CompressedPair) (int, error) {
 		return 0, ErrMismatchedLengths
 	}
 
-	product := 0
-	p1, p2 := 0, 0
-
-	cp1 := vec1[p1]
-	cp2 := vec2[p2]
+	var (
+		product    = 0
+		p1, p2     = 0, 0
+		rem1, rem2 = 0, 0
+	)
 
 	for p1 < len(vec1) && p2 < len(vec2) {
-		chunkSize := min(cp1.Count, cp2.Count)
-
-		product += chunkSize * cp1.Value * cp2.Value
-
-		cp1.Count -= chunkSize
-		cp2.Count -= chunkSize
-
-		// Если "порция" в паре закончилась, переходим к следующей.
-		if cp1.Count == 0 {
-			p1++
-			if p1 < len(vec1) {
-				cp1 = vec1[p1]
-			}
+		if rem1 == 0 {
+			rem1 = vec1[p1].Count
 		}
-		if cp2.Count == 0 {
+		if rem2 == 0 {
+			rem2 = vec2[p2].Count
+		}
+
+		chunkSize := min(rem1, rem2)
+
+		product += chunkSize * vec1[p1].Value * vec2[p2].Value
+
+		rem1 -= chunkSize
+		rem2 -= chunkSize
+
+		if rem1 == 0 {
+			p1++
+		}
+		if rem2 == 0 {
 			p2++
-			if p2 < len(vec2) {
-				cp2 = vec2[p2]
-			}
 		}
 	}
 
 	return product, nil
 }
 
-// uncompressedLength вычисляет полную (разжатую) длину вектора.
 func uncompressedLength(vector []CompressedPair) int {
 	sum := 0
 	for _, cp := range vector {
